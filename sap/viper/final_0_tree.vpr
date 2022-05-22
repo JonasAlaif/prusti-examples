@@ -1,0 +1,31 @@
+field val: Int
+field left: Ref
+field right: Ref
+
+predicate tree(x:Ref) {
+    x != null ==> acc(x.val) && acc(x.left) && acc(x.right) && tree(x.left) && tree(x.right)
+}
+
+method insert(t:Ref, v:Int) // insert v in the tree t
+    requires tree(t)
+    ensures tree(t)
+{
+    unfold tree(t)
+    if(t == null) {
+        allocNode(t,v) // macro; think: t := new List(v, null, null)
+        fold tree(t.left)
+        fold tree(t.right)
+    } else {
+        if (v < t.val) {
+            insert(t.left, v)
+        }
+        elseif (t.val < v) {
+            insert(t.right, v)
+        }
+    }
+    fold tree(t)
+}
+
+define allocNode(x,v) {
+    inhale acc(x.val) && acc(x.left) && acc(x.right) && x.left == null && x.right == null && x.val == v
+}
