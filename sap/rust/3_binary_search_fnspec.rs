@@ -6,12 +6,6 @@ use prusti_contracts::*;
 //   }
 // }
 // #[requires(is_sorted(a))]
-// #[ensures(match result {
-//   // If we returned `None` the `key` must not be in the slice:
-//   None => forall(|idx: usize| 0 <= idx && idx < a.len() ==> a[idx] != key),
-//   // If we returned `Some(idx)` then `idx` must point to an element equal to `key`:
-//   Some(idx) => a[idx] == key,
-// })]
 
 /// Binary searches a sorted slice for a given element.
 ///
@@ -20,6 +14,11 @@ use prusti_contracts::*;
 /// one of the matches could be returned.
 /// 
 /// If the value is not found then `None` is returned.
+
+// #[ensures(match result {
+//   Some(idx) => a[idx] == key,
+//   None => forall(|idx: usize| 0 <= idx && idx < a.len() ==> a[idx] != key),
+// })]
 pub fn search(a: &[i32], key: i32) -> Option<usize> {
   let mut low: usize = 0;
   let mut high: usize = a.len();
